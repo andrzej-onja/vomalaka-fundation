@@ -4,10 +4,19 @@ const mongoose = require("mongoose");
 const { graphqlHTTP } = require("express-graphql");
 const bookSchema = require("./graphql/BookSchema").BookSchema;
 
-mongoose.connect("mongodb://mongo/myappdb", (err) => {
-  if (err) throw err;
-  console.log("connected to mongo");
-});
+const cors = require("cors");
+
+app.use(cors());
+app.options("*", cors());
+
+mongoose.connect(
+  "mongodb://mongo/myappdb",
+  { useUnifiedTopology: true },
+  (err) => {
+    if (err) throw err;
+    console.log("connected to monggggggggggggggggo");
+  }
+);
 
 app.set("port", process.env.port || 4000);
 app.listen(app.get("port"), () => {
