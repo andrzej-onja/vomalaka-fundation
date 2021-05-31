@@ -4,17 +4,23 @@ var GraphQLID = require("graphql").GraphQLID;
 var GraphQLString = require("graphql").GraphQLString;
 
 // Book Type
-exports.bookType = new GraphQLObjectType({
-  name: "book",
+exports.adType = new GraphQLObjectType({
+  name: "ad",
   fields: () => {
     return {
       id: {
         type: new GraphQLNonNull(GraphQLID),
       },
-      name: {
+      title: {
         type: GraphQLString,
       },
-      author: {
+      body: {
+        type: GraphQLString,
+      },
+      username: {
+        type: GraphQLString,
+      },
+      createdAt: {
         type: GraphQLString,
       },
     };

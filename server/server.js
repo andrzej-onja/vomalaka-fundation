@@ -3,8 +3,13 @@ const app = express();
 const mongoose = require("mongoose");
 const { graphqlHTTP } = require("express-graphql");
 const bookSchema = require("./graphql/BookSchema").BookSchema;
+const adSchema = require("./graphql/AdSchema").AdSchema;
 
 const cors = require("cors");
+
+const gql = require("graphql-tag");
+const Ad = require("./models/ad");
+const BookModel = require("./models/book");
 
 app.use(cors());
 app.options("*", cors());
@@ -14,7 +19,7 @@ mongoose.connect(
   { useUnifiedTopology: true },
   (err) => {
     if (err) throw err;
-    console.log("connected to monggggggggggggggggo");
+    console.log("connected to mo1223m");
   }
 );
 
@@ -26,12 +31,12 @@ app.listen(app.get("port"), () => {
 app.use(
   "/graphql",
   graphqlHTTP({
-    schema: bookSchema,
+    schema: adSchema,
     rootValue: global,
     graphiql: true,
   })
 );
 
 app.get("/", (req, res) => {
-  res.send("hello world ! ");
+  res.send("hello wood ! ");
 });
