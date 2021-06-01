@@ -4,12 +4,13 @@ const mongoose = require("mongoose");
 const { graphqlHTTP } = require("express-graphql");
 const bookSchema = require("./graphql/BookSchema").BookSchema;
 const adSchema = require("./graphql/AdSchema").AdSchema;
+const { mergeSchemas } = require("@graphql-tools/merge");
+
+const mergedSchema = mergeSchemas({
+  schemas: [bookSchema, adSchema],
+});
 
 const cors = require("cors");
-
-const gql = require("graphql-tag");
-const Ad = require("./models/ad");
-const BookModel = require("./models/book");
 
 app.use(cors());
 app.options("*", cors());
@@ -31,7 +32,7 @@ app.listen(app.get("port"), () => {
 app.use(
   "/graphql",
   graphqlHTTP({
-    schema: adSchema,
+    schema: mergedSchema,
     rootValue: global,
     graphiql: true,
   })
