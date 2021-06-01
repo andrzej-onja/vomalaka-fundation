@@ -19,11 +19,11 @@ module.exports = {
     },
     resolve: async (root, args) => {
       const uModel = new adModel(args);
-      const newad = await uModel.save();
-      if (!newad) {
+      const newAd = await uModel.save();
+      if (!newAd) {
         throw new Error("error");
       }
-      return newad;
+      return newAd;
     },
   },
   updatead: {
@@ -43,11 +43,11 @@ module.exports = {
       },
     },
     resolve: async (root, args) => {
-      const Updatedad = await adModel.findByIdAndUpdate(args.id, args);
-      if (!Updatedad) {
+      const UpdatedAd = await adModel.findByIdAndUpdate(args.id, args);
+      if (!UpdatedAd) {
         throw new Error("Error");
       }
-      return Updatedad;
+      return UpdatedAd;
     },
   },
   deletead: {
@@ -58,11 +58,11 @@ module.exports = {
       },
     },
     resolve: async (root, args) => {
-      const removedad = await adModel.findByIdAndRemove(args.id);
-      if (!removedad) {
+      const removedAd = await adModel.findByIdAndRemove(args.id);
+      if (!removedAd) {
         throw new Error("error");
       }
-      return removedad;
+      return removedAd;
     },
   },
 };

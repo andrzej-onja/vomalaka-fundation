@@ -17,10 +17,10 @@ const AdSchema = new Schema({
   createdAt: {
     type: String,
   },
-  // user: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "users",
-  // },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "users",
+  },
 });
 
 var AdModel = mongoose.model("ad", AdSchema);

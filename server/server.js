@@ -2,12 +2,14 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const { graphqlHTTP } = require("express-graphql");
-const bookSchema = require("./graphql/BookSchema").BookSchema;
-const adSchema = require("./graphql/AdSchema").AdSchema;
 const { mergeSchemas } = require("@graphql-tools/merge");
 
+const bookSchema = require("./graphql/BookSchema").BookSchema;
+const adSchema = require("./graphql/AdSchema").AdSchema;
+const userSchema = require("./graphql/UserSchema").UserSchema;
+
 const mergedSchema = mergeSchemas({
-  schemas: [bookSchema, adSchema],
+  schemas: [bookSchema, adSchema, userSchema],
 });
 
 const cors = require("cors");
