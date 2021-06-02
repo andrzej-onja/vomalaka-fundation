@@ -4,7 +4,7 @@ var JWT_SECRET = require("../../config").JWT_SECRET;
 var GraphQLNonNull = require("graphql").GraphQLNonNull;
 var GraphQLString = require("graphql").GraphQLString;
 var GraphQLInputObjectType = require("graphql").GraphQLInputObjectType;
-
+const { validateRegisterInput } = require("../../utils/validators");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -31,6 +31,24 @@ module.exports = {
       const {
         registerInput: { password, username, confirmPassword, email },
       } = args;
+
+      const existingUser = await usersModel.findOne({ username });
+
+      const { errors, valid } = validateRegisterInput(
+        password,
+        username,
+        confirmPassword,
+        email
+      );
+
+      if (!valid) {
+        throw new Error(`Errors ${errors}`);
+      }
+
+      console.log(existingUser, "existingUser");
+      if (existingUser) {
+        throw new Error("user name already exists");
+      }
       const hashedPassword = await bcrypt.hash(password, 12);
       const uModel = new usersModel({
         password: hashedPassword,
