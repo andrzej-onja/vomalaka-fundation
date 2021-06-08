@@ -33,10 +33,13 @@ app.listen(app.get("port"), () => {
 
 app.use(
   "/graphql",
-  graphqlHTTP({
-    schema: mergedSchema,
-    rootValue: global,
-    graphiql: true,
+  graphqlHTTP((req, res, graphQLParams) => {
+    return {
+      schema: mergedSchema,
+      rootValue: global,
+      graphiql: true,
+      context: { req },
+    };
   })
 );
 

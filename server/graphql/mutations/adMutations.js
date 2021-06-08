@@ -2,9 +2,10 @@ var adType = require("../types/adType");
 var adModel = require("../../models/ad");
 var GraphQLNonNull = require("graphql").GraphQLNonNull;
 var GraphQLString = require("graphql").GraphQLString;
+const checkAuth = require("../../utils/check-auth");
 
 module.exports = {
-  addad: {
+  createAd: {
     type: adType.adType,
     args: {
       title: {
@@ -13,12 +14,22 @@ module.exports = {
       body: {
         type: new GraphQLNonNull(GraphQLString),
       },
-      username: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
     },
-    resolve: async (root, args) => {
-      const uModel = new adModel(args);
+    resolve: async (root, args, context) => {
+      // console.log(root, "root ");
+      // console.log(context, "context ");
+      const user = checkAuth(context);
+      const { title, body, username } = args;
+
+      // const uModel = new adModel(args);
+      const uModel = new adModel({
+        title,
+        body,
+        username: user.username,
+        user: user.id,
+        cretedAt: new Date().toISOString(),
+      });
+
       const newAd = await uModel.save();
       if (!newAd) {
         throw new Error("error");
