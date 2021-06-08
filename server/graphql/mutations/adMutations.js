@@ -19,6 +19,7 @@ module.exports = {
       // console.log(root, "root ");
       // console.log(context, "context ");
       const user = checkAuth(context);
+      console.log(user, "user");
       const { title, body, username } = args;
 
       // const uModel = new adModel(args);
@@ -27,7 +28,7 @@ module.exports = {
         body,
         username: user.username,
         user: user.id,
-        cretedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       });
 
       const newAd = await uModel.save();
@@ -68,12 +69,26 @@ module.exports = {
         type: new GraphQLNonNull(GraphQLString),
       },
     },
-    resolve: async (root, args) => {
-      const removedAd = await adModel.findByIdAndRemove(args.id);
-      if (!removedAd) {
-        throw new Error("error");
+    resolve: async (root, args, context) => {
+      console.log(args, "args");
+      const user = checkAuth(context);
+
+      const adToRemove = await adModel.findByIdAndRemove(args.id);
+      try {
+        if (user.username === adToRemove.username) {
+          await adToRemove.delete();
+          return "ad deleted successfully";
+        } else {
+          throw new Error("action not allowed");
+        }
+      } catch (error) {
+        throw new Error(error);
       }
-      return removedAd;
+
+      // if (!removedAd) {
+      //   throw new Error("error");
+      // }
+      // return removedAd;
     },
   },
 };
