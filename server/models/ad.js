@@ -21,6 +21,19 @@ const AdSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "users",
   },
+  comments: [
+    {
+      body: { type: String },
+      username: { type: String },
+      createdAt: { type: String },
+    },
+  ],
+  likes: [
+    {
+      username: { type: String },
+      createdAt: { type: String },
+    },
+  ],
 });
 
 var AdModel = mongoose.model("ad", AdSchema);

@@ -3,6 +3,7 @@ var adModel = require("../../models/ad");
 var GraphQLNonNull = require("graphql").GraphQLNonNull;
 var GraphQLString = require("graphql").GraphQLString;
 const checkAuth = require("../../utils/check-auth");
+var GraphQLID = require("graphql").GraphQLID;
 
 module.exports = {
   createAd: {
@@ -89,6 +90,77 @@ module.exports = {
       //   throw new Error("error");
       // }
       // return removedAd;
+    },
+  },
+  createComment: {
+    type: adType.adType,
+    args: {
+      postId: {
+        type: new GraphQLNonNull(GraphQLID),
+      },
+      body: {
+        type: new GraphQLNonNull(GraphQLString),
+      },
+    },
+    resolve: async (root, { postId, body }, context) => {
+      console.log(postId, body, "postId, body");
+      try {
+        const { username } = checkAuth(context);
+
+        if (body.trim() === "") {
+          throw new Error("Comment body must not be empty");
+        }
+
+        const adToComment = await adModel.findById(postId);
+
+        if (adToComment) {
+          adToComment.comments.unshift({
+            body,
+            username,
+            createdAt: new Date().toISOString(),
+          });
+          await adToComment.save();
+          return adToComment;
+        } else {
+          throw new Error("Post not found");
+        }
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+  },
+  deleteComment: {
+    type: adType.adType,
+    args: {
+      postId: {
+        type: new GraphQLNonNull(GraphQLID),
+      },
+      commentId: {
+        type: new GraphQLNonNull(GraphQLID),
+      },
+    },
+    resolve: async (root, { postId, commentId }, context) => {
+      console.log(args, "args");
+      try {
+        const { username } = checkAuth(context);
+
+        const ad = await adModel.findById(postId);
+
+        if (ad) {
+          const commentIndex = ad.comments.findIndex((c) => c.id === commentId);
+          if (ad.comments[commentIndex].username === username) {
+            ad.comments.splice(commentIndex, 1);
+            await ad.save();
+            return ad;
+          } else {
+            throw new Error("action not allowed");
+          }
+        } else {
+          throw new Error("ad / offer not found");
+        }
+      } catch (error) {
+        throw new Error(error);
+      }
     },
   },
 };
